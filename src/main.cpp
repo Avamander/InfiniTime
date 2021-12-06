@@ -8,8 +8,6 @@
 #include <nrf_delay.h>
 
 // nimble
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCInconsistentNamingInspection"
 #define min // workaround: nimble's min/max macros conflict with libstdc++
 #define max
 #include <controller/ble_ll.h>
@@ -58,6 +56,9 @@ Pinetime::Logging::NrfLogger logger;
   #include "logging/DummyLogger.h"
 Pinetime::Logging::DummyLogger logger;
 #endif
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCInconsistentNamingInspection"
 
 static constexpr uint8_t touchPanelTwiAddress = 0x15;
 static constexpr uint8_t motionSensorTwiAddress = 0x18;
@@ -161,8 +162,8 @@ Pinetime::System::SystemTask systemTask(spi,
 /* Variable Declarations for variables in noinit SRAM
    Increment NoInit_MagicValue upon adding variables to this area
 */
-extern uint32_t __start_noinit_data;
-extern uint32_t __stop_noinit_data;
+extern uint32_t __start_noinit_data; // NOLINT(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp)
+extern uint32_t __stop_noinit_data;  // NOLINT(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp)
 static constexpr uint32_t NoInit_MagicValue = 0xDEAD0000;
 uint32_t NoInit_MagicWord __attribute__((section(".noinit")));
 std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> NoInit_BackUpTime __attribute__((section(".noinit")));
@@ -252,7 +253,7 @@ uint32_t npl_freertos_hw_enter_critical(void) {
 }
 
 void npl_freertos_hw_exit_critical(uint32_t ctx) {
-  if (!ctx) {
+  if (ctx == 0u) {
     __enable_irq();
   }
 }
@@ -275,7 +276,7 @@ void nimble_port_run(void) {
 #pragma clang diagnostic pop
 }
 
-void BleHost(void*) {
+void BleHost(void* /*unused*/) {
   nimble_port_run();
 }
 
@@ -288,7 +289,7 @@ void nimble_port_init(void) {
   ble_store_ram_init();
 
   int res;
-  res = hal_timer_init(5, NULL);
+  res = hal_timer_init(5, nullptr);
   ASSERT(res == 0);
   res = os_cputime_init(32768);
   ASSERT(res == 0);
@@ -348,5 +349,4 @@ void nimble_port_ll_task_func(void* args) {
     APP_ERROR_HANDLER(NRF_ERROR_FORBIDDEN);
   }
 }
-
-#pragma clang diagnostic pop
+#pragma clang diagnostic pop // This is for OCInconsistentNamingInspection
