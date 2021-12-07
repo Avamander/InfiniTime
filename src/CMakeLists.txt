@@ -782,7 +782,7 @@ link_directories(
 )
 
 
-set(COMMON_FLAGS -flto -Wl,-flto -fuse-linker-plugin -Wl,-fuse-linker-plugin -fno-fat-lto-objects -MP -MD -mthumb -mabi=aapcs -Wall -Wno-unknown-pragmas -g3 -ffunction-sections -fdata-sections -fno-strict-aliasing -fno-builtin --short-enums -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wreturn-type -Werror=return-type -fstack-usage -fno-exceptions -fno-non-call-exceptions)
+set(COMMON_FLAGS -fprintf-return-value -fpredictive-commoning -fsplit-paths -fivopts -ftree-loop-im -ftree-loop-ivcanon -ftree-loop-if-convert -floop-interchange -ftree-coalesce-vars -ftree-loop-if-convert -floop-nest-optimize -ftree-loop-linear -floop-strip-mine -floop-block -fisolate-erroneous-paths-attribute -fisolate-erroneous-paths-dereference -fipa-pta -fipa-profile -ftree-partial-pre -fmerge-all-constants -fno-exceptions -fshort-enums -ffast-math -ffp-contract=on -fno-semantic-interposition -freg-struct-return -flto -Wl,-flto -fuse-linker-plugin -Wl,-fuse-linker-plugin -fno-fat-lto-objects -MP -MD -mthumb -mabi=aapcs -Wall -Wno-unknown-pragmas -g3 -ffunction-sections -fdata-sections -fno-strict-aliasing -fno-builtin --short-enums -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Wreturn-type -Werror=return-type -fstack-usage -fno-exceptions -fno-non-call-exceptions)
 add_definitions(-DCONFIG_GPIO_AS_PINRESET)
 add_definitions(-DNIMBLE_CFG_CONTROLLER)
 add_definitions(-DOS_CPUTIME_FREQ)
@@ -858,7 +858,7 @@ set(NRF5_LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/gcc_nrf52.ld")
 add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
 set_target_properties(${EXECUTABLE_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_FILE_NAME})
 target_link_libraries(${EXECUTABLE_NAME} nimble lvgl littlefs nrf-sdk)
-target_link_options(${EXECUTABLE_NAME} PUBLIC -Os -fno-fat-lto-objects -fuse-linker-plugin -Wl,-z,now)
+target_link_options(${EXECUTABLE_NAME} PUBLIC -fprintf-return-value -fpredictive-commoning -fsplit-paths -fivopts -ftree-loop-ivcanon -ftree-loop-im -ftree-loop-if-convert -floop-interchange -ftree-coalesce-vars -floop-nest-optimize -ftree-loop-linear -floop-strip-mine -floop-block -fisolate-erroneous-paths-attribute -fisolate-erroneous-paths-dereference -fipa-pta -fipa-profile -ftree-partial-pre -fmerge-all-constants -fno-exceptions -freg-struct-return -fshort-enums -Os -fno-semantic-interposition -ffp-contract=on -ffast-math -fno-fat-lto-objects -fuse-linker-plugin -Wl,-z,now)
 target_compile_options(${EXECUTABLE_NAME} PUBLIC
         $<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:DEBUG>>: ${COMMON_FLAGS} -Og -g3>
         $<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:RELEASE>>: ${COMMON_FLAGS} -Os>
